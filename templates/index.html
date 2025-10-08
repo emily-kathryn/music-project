@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🎵 Music Analyzer & Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #84fab0, #8fd3f4);
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 420px;
+            margin: 0 auto 40px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 80%;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        .result, .recommendations {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 500px;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f9f9f9;
+            margin: 8px auto;
+            width: 80%;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        p.error {
+            color: red;
+            font-weight: bold;
+        }
+
+        #loading {
+            display: none;
+            font-style: italic;
+            color: #333;
+        }
+    </style>
+
+    <script>
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h1>🎧 Music Analyzer & Recommender</h1>
+
+    <form method="POST" onsubmit="showLoading()">
+        <h3>Enter Artist & Track</h3>
+        <input type="text" name="artist_name" placeholder="Artist (e.g., Coldplay)" required><br>
+        <input type="text" name="track_name" placeholder="Track title (e.g., Viva La Vida)" required><br>
+        <button type="submit">Analyze Song</button>
+    </form>
+
+    <p id="loading">⏳ Analyzing song and finding recommendations...</p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if result %}
+    <div class="result">
+        <h2>🎶 Song Analysis</h2>
+        <p><strong>Artist:</strong> {{ result.artist }}</p>
+        <p><strong>Track:</strong> {{ result.track }}</p>
+        <p><strong>Key:</strong> {{ result.key }}</p>
+        <p><strong>Tempo (BPM):</strong> {{ result.tempo }}</p>
+        <p><strong>Energy:</strong> {{ result.energy }}</p>
+        <p><strong>Loudness (dB):</strong> {{ result.loudness_db }}</p>
+        <p><strong>Duration (minutes):</strong> {{ result.duration_minutes }}</p>
+        <p><strong>Popularity:</strong> {{ result.popularity }}</p>
+    </div>
+    {% endif %}
+
+    {% if recommendations %}
+    <div class="recommendations">
+        <h2>🎧 Recommended Songs</h2>
+        <ul>
+            {% for rec in recommendations %}
+                <li>{{ rec.name }} — {{ rec.artist }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>
