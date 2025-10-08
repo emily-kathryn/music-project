@@ -1,12 +1,17 @@
+import os
 import requests
 import base64
 
-# --- Spotify Credentials ---
-CLIENT_ID = "9aa7f71bfa3f4506b3d51572e42c0f9f"
-CLIENT_SECRET = "f9914eedb1f742759f9c7c1ab83eda07"
+# Read Spotify credentials from environment variables to avoid committing secrets
+CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
 def get_spotify_token():
     try:
+        # Ensure credentials are present
+        if not CLIENT_ID or not CLIENT_SECRET:
+            return {"error": "Spotify credentials not set. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in your environment."}
+
         auth_str = f"{CLIENT_ID}:{CLIENT_SECRET}"
         b64_auth_str = base64.b64encode(auth_str.encode()).decode()
 
