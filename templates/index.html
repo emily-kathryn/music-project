@@ -2,129 +2,308 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>🎵 Music Analyzer & Recommender</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Audio Analyzer</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(120deg, #84fab0, #8fd3f4);
-            text-align: center;
-            padding: 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         h1 {
-            color: #333;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
 
-        form {
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            width: 420px;
-            margin: 0 auto 40px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
         }
 
-        input, button {
-            width: 80%;
-            margin: 8px 0;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         button {
-            background: #333;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         button:hover {
-            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .result, .recommendations {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            width: 500px;
-            margin: 0 auto 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        button:active {
+            transform: translateY(0);
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            background: #f9f9f9;
-            margin: 8px auto;
-            width: 80%;
-            padding: 10px;
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
         }
 
-        p.error {
-            color: red;
-            font-weight: bold;
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        #loading {
-            display: none;
-            font-style: italic;
+        .result-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
             color: #333;
         }
-    </style>
 
-    <script>
-        function showLoading() {
-            document.getElementById("loading").style.display = "block";
+        .track-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-    </script>
+
+        .track-info img {
+            width: 150px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .track-info h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .track-info p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .spotify-link {
+            color: white;
+            font-size: 16px;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        audio {
+            margin-top: 15px;
+            width: 100%;
+            outline: none;
+        }
+
+        .recommendations h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 22px;
+        }
+
+        .rec-item {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .rec-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+
+        .rec-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .rec-artist {
+            color: #666;
+            font-size: 14px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>🎧 Music Analyzer & Recommender</h1>
+    <div class="container">
+        <h1>🎵 Music Audio Analyzer</h1>
 
-    <form method="POST" onsubmit="showLoading()">
-        <h3>Enter Artist & Track</h3>
-        <input type="text" name="artist_name" placeholder="Artist (e.g., Coldplay)" required><br>
-        <input type="text" name="track_name" placeholder="Track title (e.g., Viva La Vida)" required><br>
-        <button type="submit">Analyze Song</button>
-    </form>
+        <div class="card">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="artist_name">Artist Name</label>
+                    <input type="text" id="artist_name" name="artist_name" placeholder="Enter artist name" required>
+                </div>
 
-    <p id="loading">⏳ Analyzing song and finding recommendations...</p>
+                <div class="form-group">
+                    <label for="track_name">Track Name</label>
+                    <input type="text" id="track_name" name="track_name" placeholder="Enter track name" required>
+                </div>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+                <button type="submit">Analyze Track</button>
+            </form>
+        </div>
 
-    {% if result %}
-    <div class="result">
-        <h2>🎶 Song Analysis</h2>
-        <p><strong>Artist:</strong> {{ result.artist }}</p>
-        <p><strong>Track:</strong> {{ result.track }}</p>
-        <p><strong>Key:</strong> {{ result.key }}</p>
-        <p><strong>Tempo (BPM):</strong> {{ result.tempo }}</p>
-        <p><strong>Energy:</strong> {{ result.energy }}</p>
-        <p><strong>Loudness (dB):</strong> {{ result.loudness_db }}</p>
-        <p><strong>Duration (minutes):</strong> {{ result.duration_minutes }}</p>
-        <p><strong>Popularity:</strong> {{ result.popularity }}</p>
+        {% if error %}
+        <div class="card">
+            <div class="error">{{ error }}</div>
+        </div>
+        {% endif %}
+
+        {% if result %}
+        <div class="card">
+            <div class="track-info">
+                {% if result.album_art %}
+                    <img src="{{ result.album_art }}" alt="Album Art">
+                {% endif %}
+                <h2>{{ result.track }}</h2>
+                <p>by {{ result.artist }}</p>
+
+                {% if result.spotify_url %}
+                    <a class="spotify-link" href="{{ result.spotify_url }}" target="_blank">Open in Spotify</a>
+                {% endif %}
+
+                {% if result.preview_url %}
+                    <audio controls>
+                        <source src="{{ result.preview_url }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% endif %}
+            </div>
+
+            <div class="results-grid">
+                {% if result.key %}
+                <div class="result-item">
+                    <div class="result-label">Key</div>
+                    <div class="result-value">{{ result.key }}</div>
+                </div>
+                {% endif %}
+
+                {% if result.tempo %}
+                <div class="result-item">
+                    <div class="result-label">Tempo</div>
+                    <div class="result-value">{{ result.tempo }} BPM</div>
+                </div>
+                {% endif %}
+
+                {% if result.energy %}
+                <div class="result-item">
+                    <div class="result-label">Energy</div>
+                    <div class="result-value">{{ "%.2f"|format(result.energy) }}</div>
+                </div>
+                {% endif %}
+
+                {% if result.loudness %}
+                <div class="result-item">
+                    <div class="result-label">Loudness</div>
+                    <div class="result-value">{{ result.loudness }} dB</div>
+                </div>
+                {% endif %}
+
+                {% if result.duration_minutes %}
+                <div class="result-item">
+                    <div class="result-label">Duration</div>
+                    <div class="result-value">{{ result.duration_minutes }} min</div>
+                </div>
+                {% endif %}
+
+                {% if result.popularity %}
+                <div class="result-item">
+                    <div class="result-label">Popularity</div>
+                    <div class="result-value">{{ result.popularity }}/100</div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if recommendations %}
+            <div class="recommendations">
+                <h3>🎧 Similar Tracks</h3>
+                {% for rec in recommendations %}
+                <div class="rec-item">
+                    <div>
+                        <div class="rec-name">{{ rec.name }}</div>
+                        <div class="rec-artist">{{ rec.artist }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-
-    {% if recommendations %}
-    <div class="recommendations">
-        <h2>🎧 Recommended Songs</h2>
-        <ul>
-            {% for rec in recommendations %}
-                <li>{{ rec.name }} — {{ rec.artist }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
 </body>
 </html>
