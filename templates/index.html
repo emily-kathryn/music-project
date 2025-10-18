@@ -203,7 +203,7 @@
         <h1>🎵 Music Audio Analyzer</h1>
 
         <div class="card">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="artist_name">Artist Name</label>
                     <input type="text" id="artist_name" name="artist_name" placeholder="Enter artist name" required>
@@ -212,6 +212,11 @@
                 <div class="form-group">
                     <label for="track_name">Track Name</label>
                     <input type="text" id="track_name" name="track_name" placeholder="Enter track name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="audio_file">Optional Audio File (for local analysis fallback)</label>
+                    <input type="file" id="audio_file" name="audio_file" accept="audio/*">
                 </div>
 
                 <button type="submit">Analyze Track</button>
@@ -253,12 +258,7 @@
                 </div>
                 {% endif %}
 
-                {% if result.tempo %}
-                <div class="result-item">
-                    <div class="result-label">Tempo</div>
-                    <div class="result-value">{{ result.tempo }} BPM</div>
-                </div>
-                {% endif %}
+                {# Tempo removed per request #}
 
                 {% if result.energy %}
                 <div class="result-item">
@@ -267,10 +267,10 @@
                 </div>
                 {% endif %}
 
-                {% if result.loudness %}
+                {% if result.loudness_db or result.loudness %}
                 <div class="result-item">
                     <div class="result-label">Loudness</div>
-                    <div class="result-value">{{ result.loudness }} dB</div>
+                    <div class="result-value">{{ result.loudness_db if result.loudness_db is not none else result.loudness }} dB</div>
                 </div>
                 {% endif %}
 
@@ -285,6 +285,27 @@
                 <div class="result-item">
                     <div class="result-label">Popularity</div>
                     <div class="result-value">{{ result.popularity }}/100</div>
+                </div>
+                {% endif %}
+
+                {% if result.playcount %}
+                <div class="result-item">
+                    <div class="result-label">Playcount</div>
+                    <div class="result-value">{{ result.playcount }}</div>
+                </div>
+                {% endif %}
+
+                {% if result.listeners %}
+                <div class="result-item">
+                    <div class="result-label">Listeners</div>
+                    <div class="result-value">{{ result.listeners }}</div>
+                </div>
+                {% endif %}
+
+                {% if result.tags %}
+                <div class="result-item">
+                    <div class="result-label">Tags</div>
+                    <div class="result-value" style="font-size:14px; font-weight:500;">{{ result.tags|join(', ') }}</div>
                 </div>
                 {% endif %}
             </div>
